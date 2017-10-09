@@ -14,11 +14,11 @@ int main ()
 	
 	Neurone n ;
 
-	double b ; //stop time
+    double b ; //stop time
 	double t ; //start time
 	double I ;
 	double h = 0.1 ;
-	
+    //
 
 	cout << "insert a start time" << endl ;
 	cin >> t ;
