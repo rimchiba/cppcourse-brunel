@@ -38,19 +38,30 @@ Neurone::Neurone ()
 : V_(0),spikes_(0)
 {}
 
+/*vector<double> Neurone::get_potentiels() const {
+	return potentiels ;
+}*/
+
 void Neurone::update (double t,double I, double h ) {
 	
-	 if (V_ < V_thr) 
+	double refractory(0.0);
+	
+	 if (V_ > V_thr) 
 	 {
-		 V_ = exp (-h/tau)*V_ + I*R*(1-exp(-h/tau)) ;
-
-	 } else {
 		 ++ spikes_ ;
 		 times_.push_back(t) ;
+		// potentiels.push_back(V_) ;	
 		 V_ = 0.0 ;
+		 refractory = ( t/h ) ;
+	}
+	 if ( t < refractory )
+	 {
+		 V_ = 0.0 ;	
+		 refractory -= h ; 
+
+	 } else {
+		 V_ = exp (-h/tau)*V_ + I*R*(1-exp(-h/tau)) ; 
 	 }
-	
-	 
 }
 	
 	

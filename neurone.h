@@ -15,7 +15,7 @@ class Neurone {
 	const double tau = 20 ;
 	const double c = 1 ;
 	const double R = tau/c ;
-
+	//vector<double> potentiels ;
 	 
 	public :
 	
@@ -29,6 +29,7 @@ class Neurone {
 	void set_times (vector<double> times);
 	void set_spikes (int spikes) ; 
 	void update(double t, double I , double h) ;
+	//vector<double> get_potentiels()  const ;
 } ;
 
 #endif 	
