@@ -1,19 +1,24 @@
 #include <iostream>
-#include "neurone.h"
-#include "neurone.cpp" 
+#include "network.cpp"
 #include <string>
 #include <fstream>
+#include "neurone.cpp"
 
 using namespace std ;
 
-
+int main() 
+{	
+	network net ;
+	net.interaction() ;
+return 0 ;
+}
+/*
 int main () 
 {
 	string const potentiels("potentiels");
 	ofstream sortie(potentiels.c_str()) ;
 	
 	Neurone n ;
-	Neurone n1;
 
     double b ; //stop time
 	double t ; //start time
@@ -28,7 +33,8 @@ int main ()
 	cin >> b ;
 
 	cout <<" insert external current" << endl ;
-	cin >> I ;
+	cin >> I ; 
+
 
 	   
 	while (t < b)  
@@ -41,19 +47,10 @@ int main ()
 	else cout <<"false" ;
 	}
 	 
-/*while (t < b)  
-	{
-		n1.update(t,I,h) ;
-		t+=h ;
-	}
-	
-for (unsigned int i(0) ; i < n.get_potentiels::size() ; i++)
-{
-	cout << n1.get_potentiels[i] - n.get_potentiels[i] << endl;
-}*/
+sortie.close() ;
 
-sortie.close() ;	
+	
 return 0 ;
 }
-
+*/
 

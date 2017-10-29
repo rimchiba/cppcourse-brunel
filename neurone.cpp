@@ -5,10 +5,6 @@
 
 using namespace std ; 
 
-/*Neurone::Neurone (double V ,int spikes, vector<double> times) 
-	: V_ (V), spikes_(spikes),times_(times)
-{}*/
-
 
 double Neurone::getV() const {
 	return V_;
@@ -36,35 +32,56 @@ void Neurone::set_times (vector<double> times )  {
 
 Neurone::Neurone ()
 : V_(0),spikes_(0)
-{}
+{
+	for ( int i(0); i< (D/h)+1 ;++i) 
+	{
+		buffer.push_back(0) ;
+	}
+}
 
-/*vector<double> Neurone::get_potentiels() const {
-	return potentiels ;
-}*/
+void Neurone::set_buffer (vector<int> buffer )  {
+	buffer = buffer ;
+}
 
-void Neurone::update (double t,double I, double h ) {
+bool Neurone::update (double t,double I,int n) {
 	
-	double refractory(0.0);
+	double refractory (0.0);
+	bool spike ;
 	
 	 if (V_ > V_thr) 
 	 {
+		 cout << " if 1 update " << endl ;
 		 ++ spikes_ ;
-		 times_.push_back(t) ;
-		// potentiels.push_back(V_) ;	
+		 times_.push_back(t*h) ;
+		 spike = true ;
 		 V_ = 0.0 ;
 		 refractory = ( t/h ) ;
+		
 	}
 	 if ( t < refractory )
 	 {
+		 cout << " if 2 update " << endl; 
 		 V_ = 0.0 ;	
 		 refractory -= h ; 
+		 spike = false ;
 
 	 } else {
-		 V_ = exp (-h/tau)*V_ + I*R*(1-exp(-h/tau)) ; 
+		 cout << " if 3 update " << endl ;
+		 J = buffer[n % ((int)(D/h) + 1)]  ;
+		 buffer[n % ((int)(D/h) + 1)] = 0 ;
+		 V_ = exp (-h/tau)*V_ + I*R*(1-exp(-h/tau)) + J ; 
+		 spike = false ;
 	 }
+	 return spike ;
+	 ++n  ;
+	 cout <<" fin update " << endl ; 
 }
 	
-	
+		
+void Neurone::receive (int t)
+{
+	buffer[t+ (int)(D/h) % (int) (D/h)+1] += J ;
+}
 			
 			
 	

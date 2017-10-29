@@ -15,12 +15,17 @@ class Neurone {
 	const double tau = 20 ;
 	const double c = 1 ;
 	const double R = tau/c ;
-	//vector<double> potentiels ;
+	double J = 0.2 ;
+	double h= 0.1 ;
+	int t = 1 ;
+	double D = 1.5 ; //delay
+	vector<int> buffer ;
+	int n;  // nombre de pas
 	 
 	public :
 	
 	// constructeur
-	Neurone ();
+	Neurone ();   
 	
 	double getV() const ;
 	vector<double> get_times()  ;
@@ -28,7 +33,9 @@ class Neurone {
 	void setV (double v)  ;
 	void set_times (vector<double> times);
 	void set_spikes (int spikes) ; 
-	void update(double t, double I , double h) ;
+	bool update(double t, double I,int n) ;
+	void receive (int t);
+	void set_buffer (vector<int> buffer )  ;
 	//vector<double> get_potentiels()  const ;
 } ;
 
