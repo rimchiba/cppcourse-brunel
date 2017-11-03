@@ -574,3 +574,20 @@ make[1]: Leaving directory `/home/INTRANET/chiba/myfiles/nouveau/neurone/CMakeFi
     Feature record: CXX_FEATURE:0cxx_variable_templates
     Feature record: CXX_FEATURE:0cxx_variadic_macros
     Feature record: CXX_FEATURE:0cxx_variadic_templates
+Determining if files pthread.h exist passed with the following output:
+Change Dir: /home/INTRANET/chiba/Desktop/myfiles/nouveau/neurone/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTryCompileExec22585229/fast"
+make[1]: Entering directory `/home/INTRANET/chiba/myfiles/nouveau/neurone/CMakeFiles/CMakeTmp'
+/usr/bin/make -f CMakeFiles/cmTryCompileExec22585229.dir/build.make CMakeFiles/cmTryCompileExec22585229.dir/build
+make[2]: Entering directory `/home/INTRANET/chiba/myfiles/nouveau/neurone/CMakeFiles/CMakeTmp'
+/usr/local/bin/cmake -E cmake_progress_report /home/INTRANET/chiba/Desktop/myfiles/nouveau/neurone/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec22585229.dir/CheckIncludeFiles.c.o
+/usr/bin/cc    -o CMakeFiles/cmTryCompileExec22585229.dir/CheckIncludeFiles.c.o   -c /home/INTRANET/chiba/Desktop/myfiles/nouveau/neurone/CMakeFiles/CMakeTmp/CheckIncludeFiles.c
+Linking C executable cmTryCompileExec22585229
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec22585229.dir/link.txt --verbose=1
+/usr/bin/cc       CMakeFiles/cmTryCompileExec22585229.dir/CheckIncludeFiles.c.o  -o cmTryCompileExec22585229 -rdynamic 
+make[2]: Leaving directory `/home/INTRANET/chiba/myfiles/nouveau/neurone/CMakeFiles/CMakeTmp'
+make[1]: Leaving directory `/home/INTRANET/chiba/myfiles/nouveau/neurone/CMakeFiles/CMakeTmp'
+
+

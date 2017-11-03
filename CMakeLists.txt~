@@ -1,5 +1,13 @@
 cmake_minimum_required ( VERSION 2.6 )
 project (neurone)
 
-set(CMAKE_CXX_FLAGS "-o3 -W -Wall -pedantic -std=c++11")
+set(CMAKE_CXX_FLAGS "-O3 -W -Wall -pedantic -std=c++11 -g")
+
+enable_testing()
+add_subdirectory(gtest)
+include_directories(${gtest_SOURCE_DIR}/include ${gtest_SPIRCE_DIR})
+
 add_executable (neurone neurone.cpp network.cpp main.cpp )
+
+add_executable (neuron_test neuron_test.cpp neurone.cpp network.cpp )
+add_test (neuron_test neuron_test)

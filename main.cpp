@@ -1,14 +1,13 @@
-#include <iostream>
-#include "network.cpp"
+#include "network.h"
 #include <string>
 #include <fstream>
-#include "neurone.cpp"
 
 using namespace std ;
 
 int main() 
 {	
-	network net ;
+	cout<< " main " << endl ;
+	Network net ;
 	net.interaction() ;
 return 0 ;
 }
