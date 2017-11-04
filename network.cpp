@@ -1,66 +1,78 @@
 #include "network.h" 
 
+#include <fstream>
+#include <iostream>
+
 using namespace std ; 
 
+//! constructor
+/*!filling out the matrice  
+ *  with 0 or 1
+ *  the neurons with 1 are the targets 
+ */
+ 
  Network:: Network() 
- :network ( 12500 ,vector<int>(12500) ) ,neurones(12500)
+ :neurones(12500), network ( 12500 ,vector<int>(12500) ) 
 {
-	cout << " debut constructeur " << endl ;
 	int targets_exi (0) ;
 	int targets_inh (0) ;
-	for (size_t i(0) ; i <= 12500 ; ++i )
+	
+	// cibles excitatrices 
+	for ( size_t i(0) ; i < 12500 ; ++i)
 	{
 		while ( targets_exi < C_exi ) 
 		{
 			for ( size_t j(0) ; j < N_exi ; ++j )
 			{	
-				network[i][j] = uniform (0,1) ;
-				if ( network [i][j] == 1 )
+				network[i][j] = uniform (0,C_exi) ;
+				if ( network [i][j] > 0 )
 				{
-					targets_exi += 1  ;
+					targets_exi += network[i][j]  ;
 				} 
 			}
 		}
-	
+	// cibles inhibitrices 
 		while ( targets_inh < C_inh )
 		{
-			cout << " dkhal while 2" << endl ;
 			for (size_t j(10000) ; j < 12500 ; ++j )
 			{
-				network[i][j] = uniform(0,1) ;
-				if ( network [i][j]  == 1 )
+				network[i][j] = uniform(0,C_inh) ;
+				if ( network [i][j]  > 0 )
 				{
-					targets_inh += 1 ;
+					targets_inh += network[i][j] ;
 				}
 			}
 		}
-		cout << " khraj mel while 2 " << endl ;
 	}
-
+	/// filling out the vector of pointers on neurones
+	/// with 10000 excitators and
+	/// 2500 inhibitors
+		
 	for(int i(0) ; i < 10000 ; ++i)
-	neurones[i] = (new Neurone(0.1)) ; // 10000 neurones excitateurs J= 0.1
+	neurones[i] = (new Neurone(J_exi) ) ; //10000 neurones excitateurs J= 0.1
 
-	for (int i(10000) ; i < neurones.size() ; ++ i)
-	neurones[i] = (new Neurone(-0.5)) ; // 2500 inhibiteurs J = -0.5
-
-/*	for ( size_t i(0) ; i <= 12500 ; ++i)
-	{
-	    	  Neurone* n; 
-        	  neurones.push_back(n);
-    }*/
+	for (int i(10000) ;i< neurones.size() ; ++ i)
+	neurones[i] = (new Neurone(J_inh)) ; // 2500 inhibiteurs J = -0.5
 }
+
+//! destructeur.
+/*! delete all the neurons  to nullptr.
+ */
         	  
+        	 
 Network::~Network()
 {
 	for(int i(0) ; i < 12500 ; ++i)
 	{
 		 delete  neurones[i]  ;
 	}
+	neurones.clear() ;
 }
 	
 
+/// method uniform to choose random integer
 
-int Network::uniform (int a, int b)
+int Network::uniform(int a, int b)
 {
 	static random_device rd; 
 	static mt19937 gen (rd()) ;
@@ -68,22 +80,77 @@ int Network::uniform (int a, int b)
 	return dis(gen) ;
 }
 
+
+/// in each step, update all neurons
+/// and for each neuron see if it is spiking 
+/// and if it has targets
+/// than they receive the spike after a certain delay
+/// write the time and the neuron spiking in plot 
 	
-void Network::interaction ()
+void Network::interaction()
 {
-	cout << "insert a start time" << endl ;
-	cin >> temps ;
-
-	cout <<"insert a stop time " << endl ; 
-	cin >> b ;
-
-	/*cout <<"insert external current 1" << endl ;
-	cin >> I1 ;
+	ofstream sortie("plot") ;
+	int temps = 0 ;           /* clock */
+	int t_final = 10000   ;    /* Time of stop */
 	
-	cout <<"insert external current 2" << endl ;
-	cin >> I2 ;
+	while ( temps < t_final) 
+	{
+		for (size_t n(0) ; n < 12500 ; n++ )
+		{
+			cout << " parcours des neurones " << endl ;
+		    bool spike = neurones[n]->update(temps) ;
+		    cout << " updater le neurone " << endl ;
+		    
+		    if (spike) 
+			{
+				for ( size_t i(0) ; i < 12500 ; ++ n )
+				{
+					if ( network [i][n] > 0 )
+					{
+						neurones[i]-> receive (temps,network [i][n]* J_exi);
+						if (sortie)
+						{
+							sortie << temps << "   "<< n << endl; 	
+							sortie.flush() ;
+						}
+						else cerr << " erreur" << endl ;						
+					}	  
+				}
+		   
+			    for ( size_t i (N_exi) ; i < 12500 ; ++ i )
+			    {
+					 
+					if  ( network [i][n] > 0 )
+					{	
+					neurones[i]-> receive (temps, network [i][n] *J_inh);	
+					cout << " if " << endl ;
+					if (sortie)
+						{
+						sortie<< temps << "   " << n << endl;
+						sortie.flush() ;
+						}
+					else cerr << "erreur " << endl ; 
+				    }
+				}
+			}
+		}	
+	///incrementing the time 	
+	++ temps ;
+	cout << " fin while " << endl ;
+	}
+sortie.clear();
+}
 	
-/*	for (size_t i(0) ; i < neurones.size() ; i++ )
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/*for (size_t i(0) ; i < neurones.size() ; i++ )
 	{
 		neurones.get_cibles.push_back[uniform(1,10000)] += 1 ;
 		
@@ -99,39 +166,6 @@ void Network::interaction ()
 	}
 		
 */	
-	
-	while ( temps * h < b )
-	{
-		cerr<<" dkhal fel while  "<< endl ;
-		for (size_t i(0) ; i < 12500 ; i++ )
-		{
-			cout <<" for 1 " << endl;
-			for ( size_t n(0) ; n < N_exi ; ++ n )
-			{
-				cout <<" for 2 " << endl;
-				if ( network [i][n] == 1 )
-				{	
-					if ( neurones[n]->update(temps,0) )
-					 {  
-						neurones[i]-> receive (temps, J_exi);					
-					 }	  
-				}
-			}
-		cout <<  " khraj mel for thenia " << endl ;
-			for ( size_t n (N_exi) ; n < 12500 ; ++ n )
-			{
-				cout <<" for 3 " << endl;
-				if ( ( neurones[n]->update (temps,0) ) and ( network [i][n] == 1 ) )
-				{
-					neurones[i]-> receive (temps, J_inh);	
-				}
-			}
-		}			
-	++ temps ;
-	}
-	
-}	
-		
 		
 		
 		

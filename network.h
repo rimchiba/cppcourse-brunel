@@ -6,26 +6,28 @@
 
 using namespace std ;
 
+///! Network class :
+		/*! the network is a matrice, filled with the
+		 * number of interactions between neurons 
+		 * and we have a vector of neurons, if two neurons interacts 
+		 * and one of them is spiking, the other receives J. */
+		 
+
 class Network {
 	
 	private :
 		vector<vector <int> > network ;
-		//vector< vector<int> > network(taille,vector<int>(taille));
 		std::vector<Neurone*> neurones ; 
 
-		int temps  ; // temps global
-		double b ; //stop time
-		double t ; //start time
-		double I1 ;
-		double I2 ;
+		int temps  ;      // global clock
 		double h = 0.1 ;
-		double D = 1.5 ; //delay
-		const double J_exi = 0.1 ;
-		const double J_inh = - 0.5 ;
-		const double N_inh = 2500 ; 
+		double D = 1.5 ;  //delay
+		const double J_exi = 0.1 ;		 /* J of excitatory neurons */
+		const double J_inh = - 0.5 ;     /* J of inhibitory neurons */
+		const double N_inh = 2500 ;  	 /* number of neurons */ 
 		const double N_exi = 10000;
 		const double N_tot = N_inh + N_exi ;
-		const double C_exi = 1000 ;
+		const double C_exi = 1000 ;		/* number of neuron targets */
 		const double C_inh = 250 ;
 		const double C_tot = C_inh + C_exi ;
 		

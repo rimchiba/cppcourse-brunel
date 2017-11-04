@@ -2,6 +2,64 @@
 
 using namespace std ; 
 
+///! Constructor 
+/*! to fill out the buffer 
+ * of D/h + 1 size with zeros 
+ */
+ 
+Neurone::Neurone (double j)
+: V_(0),spikes_(0),J(j),buffer(16,0)
+{
+	for ( int i(0); i< (D/h)+1 ;++i) 
+	{
+		buffer.push_back(0) ;
+	}
+}
+
+/* Getters */ 
+
+double Neurone::getV() const 
+{	
+	return V_;
+}
+
+int Neurone::get_spikes () const 
+{
+	return spikes_ ;
+}
+
+double Neurone::get_J () const 
+{
+	return J ;
+}
+
+vector<double> Neurone::get_times()  
+{
+	return times_ ;
+}
+
+/* Setters  */
+void Neurone::setV (double V) 
+{
+	V_ = V ;
+}
+
+void Neurone::set_spikes (int spikes) 
+{
+	spikes_ = spikes ;
+}
+
+void Neurone::set_times (vector<double> times )  
+{
+	times_ = times ;
+}
+
+void Neurone::set_buffer (vector<int> buffer )  
+{
+	buffer = buffer ;
+}
+
+/* generating random values */
 int Neurone::random_poisson (int r)
 {
 	random_device rd;
@@ -10,87 +68,47 @@ int Neurone::random_poisson (int r)
 	return poisson(gen) ;
 }
 
-double Neurone::getV() const {	
-	return V_;
-}
-
-int Neurone::get_spikes () const {
-	return spikes_ ;
-}
-
-double Neurone::get_J () const {
-	return J ;
-}
-
-vector<double> Neurone::get_times()  {
-	return times_ ;
-}
-
-void Neurone::setV (double V) {
-	V_ = V ;
-}
-
-void Neurone::set_spikes (int spikes) {
-	spikes_ = spikes ;
-}
-
-void Neurone::set_times (vector<double> times )  {
-	times_ = times ;
-}
-
-Neurone::Neurone (double j)
-: V_(0),spikes_(0),J(j)
-{
-	for ( int i(0); i< (D/h)+1 ;++i) 
-	{
-		buffer.push_back(0) ;
-	}
-}
-
+// destructor
 Neurone::~Neurone(){} 
 
-void Neurone::set_buffer (vector<int> buffer )  {
-	buffer = buffer ;
-}
-
-bool Neurone::update (double t,double I) {
-	
-	int n(0);
+///! updating a neuron in a time t 
+/*! and return if it spikes 
+ * if there is a spike the potential
+ * is set to zero */
+ 
+bool Neurone::update (int t) 
+{
+	bool spike = false ;
 	double refractory (0.0);
-	bool spike ;
 	
-	 if (V_ > V_thr) 
-	 {
-		 ++ spikes_ ;
-		 times_.push_back(t*h) ;
-		 spike = true ;
-		 V_ = 0.0 ;
-		 refractory = ( t/h ) ;
-		 cout << " if 1 update " << endl ;		
+	if( ( !times_.empty()) and (t*h - times_.back() < V_thr) ) 
+	{
+		V_ = 0.0 ;
 	}
-	 if ( t < refractory )
-	 { 
-		 V_ = 0.0 ;	
-		 refractory -= h ; 
-		 spike = false ;
-		 cout << " if 2 update " << endl;
-
-	 } else {
-		 J = buffer[n % ((int)(D/h) + 1)]  ;
-		 buffer[n % ((int)(D/h) + 1)] = 0 ;
-		 V_ = exp (-h/tau)*V_ + I*R*(1-exp(-h/tau)) + J + random_poisson(V_ext*C_ext*h*J); 
-		 spike = false ;
-		 cout << " if 3 update " << endl ;
-	 }
+	else
+	{
+		J = buffer[t % ((int)(D/h) + 1)]  ;
+		V_ = exp (-h/tau)*V_  + J + random_poisson(V_ext*C_ext*h*J); 
+	     if (V_ > V_thr) 
+		{
+			++ spikes_ ;
+			times_.push_back(t*h) ;
+			spike = true ;
+			V_ = 0.0 ;
+			refractory = ( t/h ) ;
+			cout << " SPIKE" << endl ;		
+		}
+	}
+	 buffer[t % ((int)(D/h) + 1)] = 0 ;
 	 return spike ;
-	 ++n  ;
 	 cout <<" fin update " << endl ; 
-}
-	
-		
+}	
+
+/*spikes will be received after a delay D */ 
+
 void Neurone::receive (int t,double J)
 {
-	buffer[t+ (int)(D/h) % (int) (D/h)+1] += J ;
+	buffer[t % (int) (D/h)+1] += J ;
 }
 			
 			
