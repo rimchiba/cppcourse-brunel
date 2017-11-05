@@ -10,5 +10,6 @@ int main()
 {	
 	Network net;
 	net.interaction() ;
+	
 return 0 ;
 }

@@ -14,19 +14,21 @@ class Neurone
 {	
 	private :
 	
-	 double V_ ;                   /* membrane potential */
+	 double V_ = 0.0 ;                   /* membrane potential */
 	 int spikes_ ;                 /* number of spikes */
 	 std::vector<double> times_ ;  /* record of the time when there is a spike */ 
-	 const double V_thr = 20  ;    /* potential threshold */ 
-	 const double tau = 20 ;
-	 const double c = 1 ;
-	 const double R = tau/c ;
-	 double J ;
-	 double h= 0.1 ;
-	 double D = 1.5 ;              //delay
-	 std::vector<int> buffer ;     /* ring buffer to save a spike after  a delay D */
-	 const double C_ext = 1000 ;   /* number of targets from the brain */
-	 const double V_ext = 2 ;
+	 static constexpr double V_thr = 20  ;    /* potential threshold */ 
+	 static constexpr double tau = 20 ;
+	 static constexpr double c = 1 ;
+	 double n_thr = 2  ;
+	 static constexpr double R = tau/c ;
+	 static constexpr double h= 0.1 ;
+	 int d = 15 ;   
+	 double J ;            //delay
+	 double n_ext ;
+	 std::vector<double> buffer ;     /* ring buffer to save a spike after  a delay D */
+	 static constexpr double C_ext = 1000 ;   /* number of targets from the brain */
+	 static constexpr double V_ext = 2 ;
 	 
 	public :
 	
@@ -45,7 +47,7 @@ class Neurone
 	void setV (double v)  ;
 	void set_times (std::vector<double> times);
 	void set_spikes (int spikes) ; 
-	void set_buffer (std::vector<int> buffer )  ;
+	void set_buffer (std::vector<double> buffer )  ;
 	
 	//! update function
 	/*! Update the membrane potential and 
