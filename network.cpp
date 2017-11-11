@@ -75,12 +75,12 @@ void Network::interaction()
 		    bool spike = neurones[n]->update(temps) ;
 		    if (spike)
 			{	
-				/*if (sortie)
+				if (sortie)
 				{
 					sortie << temps << "   "<< n << endl;
 				    sortie.flush() ;
 				}
-				else cerr << " erreur" << endl ;*/
+				else cerr << " erreur" << endl ;
 				
 				for (size_t j(0) ; j < neurones.size() ; ++ j)
 				{	
