@@ -25,8 +25,9 @@ class Network {
 		int g ;
 	//	static constexpr double Vteta = 20 ;
 		static constexpr double tau = 20 ;
+		double V_thr = 20 ;
 		const double J_exi = 0.1 ;		 /* J of excitatory neurons */
-		double J_inh = -0.1 ;     /* J of inhibitory neurons */
+		double J_inh ;     /* J of inhibitory neurons */
 		const double N_inh = 2500 ;  	 /* number of neurons */ 
 		const double N_exi = 10000;
 		const double N_tot = N_inh + N_exi ;
@@ -34,12 +35,13 @@ class Network {
 		const double C_inh = 250 ;
 		const double C_tot = C_inh + C_exi ;
 		static constexpr double C_ext = 1000 ;
+		double V_ext  ;
+		
 
 		
 	public :
-		Network () ;
+		Network (double e,int g) ;
 		void interaction () ;
-		int uniform (int a, int b) ;
 		~Network() ;
 } ;
 

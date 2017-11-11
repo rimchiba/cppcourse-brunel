@@ -5,28 +5,40 @@
 
 using namespace std ; 
 
-//! constructor
-/*!filling out the matrice  
- *  with 0 or 1
- *  the neurons with 1 are the targets 
+//! In this class we create a network of many neurons with pointers
+/*! and we create a matrice of integers to represent the targets of each neuron
+ * the constructor :
+ * filling out the matrice  
+ *  with integers.
+ *  the neurons with a number different of zero are the targets 
+ * 
+ * the constructor has 2 parameters 
+ * e to determinate V_ext
+ * and g to determinate J inhibiteur
  */
  
- Network:: Network()
+ Network:: Network(double e,int g)
  :neurones(12500), network ( 12500 ,vector<int>(12500) ) 
 {
-	// double n_ext = eta * C_ext * (Vteta / C_ext * 0.1 * tau);
-	// J_inh = -g*J_exi ;
+	J_inh = -g*J_exi ;
+	V_ext = e*C_ext*V_thr/(J_exi*C_exi*tau);
+	
+	static random_device rd; 
+	static mt19937 gen (rd()) ;
+	static uniform_int_distribution<> dis_exi(0,9999) ;
+	static uniform_int_distribution<> dis_inh(10000,12499) ;
+
 
 	for ( size_t i(0) ; i < 12500 ; ++ i)
 	{
 		for (int j(0) ; j < C_exi ; ++j )
 		{
-			network[i][uniform(0,9999)] += 1 ;
+			network[i][dis_exi(gen)] += 1 ;
 		}
 		
 		for ( int j(0) ; j < C_inh ; ++ j)
 		{
-			network[i][uniform(10000,12499)] += 1 ;
+			network[i][dis_inh(gen)] += 1 ;
 		}
 	}		
 			
@@ -42,64 +54,53 @@ using namespace std ;
 }
 
 
+//! interaction method
+/*! We go throught all the neurons, for each neuron we see if it has targets
+ *  if it spikes, all its targets receive its J
+ *  after the delay D 
+ *  write the time and the neuron spiking in "plot"
+ */
+
 void Network::interaction()
 {	
+	
 	ofstream sortie("plot") ;
 	int temps = 0 ;            /* clock */
-	int t_final = 10000   ;    /* Time of stop */
+	int t_final = 1000   ;    /* Time of stop */
 	
 	while ( temps < t_final )
    {
 		for (size_t n(0) ; n < neurones.size() ; ++ n )
 		{
-		    if (neurones[n]->update(temps) ) 
+		    bool spike = neurones[n]->update(temps) ;
+		    if (spike)
 			{	
-
+				/*if (sortie)
+				{
+					sortie << temps << "   "<< n << endl;
+				    sortie.flush() ;
+				}
+				else cerr << " erreur" << endl ;*/
+				
 				for (size_t j(0) ; j < neurones.size() ; ++ j)
-				    {
-						if ( network[j][n] > 0)
-						{   cout << " if " << endl; 
-							neurones[j]-> receive (temps+15, network [j][n] * neurones[n]->get_J());
-							cout << temps << "  " << n << endl ;
-							if (sortie)
-							{
-								sortie << temps << "   "<< n << endl; 	
-								sortie.flush() ;
-							}
-						else cerr << " erreur" << endl ;
-						}
+				{	
+					if ( network[j][n] > 0)
+					{   
+						neurones[j]-> receive (temps+15, network [j][n] * neurones[n]->get_J());
+							
 					}
+				}
 			}
 		}
 	++ temps ;
    }	
 }
-			
-
-
-/// method uniform to choose random integer
-
-int Network::uniform(int a, int b)
-{
-	static random_device rd; 
-	static mt19937 gen (rd()) ;
-	static uniform_int_distribution<> dis(a,b) ;
-	return dis(gen) ;
-}
-
-
-/// in each step, update all neurons
-/// and for each neuron see if it is spiking 
-/// and if it has targets
-/// than they receive the spike after a certain delay
-/// write the time and the neuron spiking in plot 
 
 	
 //! destructeur.
 /*! delete all the neurons  to nullptr.
  */
-        	  
-        	 
+        	          	 
 Network::~Network()
 {
 	for(int i(0) ; i < 12500 ; ++i)

@@ -8,7 +8,11 @@
 
 ///! Neurone class 
    /*! Class representing one neuron 
+    * each time step, the potential of the neuron is updated
+    * each neuron is caracterised by its J
+    * the buffer save the value of J for a neuron target to receive it
     */
+    
        
 class Neurone 
 {	
@@ -24,11 +28,11 @@ class Neurone
 	 static constexpr double R = tau/c ;
 	 static constexpr double h= 0.1 ;
 	 int d = 15 ;   
-	 double J ;            //delay
+	 double J = 0.1;            //delay
 	 double n_ext ;
 	 std::vector<double> buffer ;     /* ring buffer to save a spike after  a delay D */
 	 static constexpr double C_ext = 1000 ;   /* number of targets from the brain */
-	 static constexpr double V_ext = 2 ;
+	
 	 
 	public :
 	
@@ -50,18 +54,17 @@ class Neurone
 	void set_buffer (std::vector<double> buffer )  ;
 	
 	//! update function
-	/*! Update the membrane potential and 
+	/*! Update the membrane potential of 1 neuron
 	 * returns if there is a spike or not */
 	bool update(int t) ;
+	int random_poisson (int r);
 	
 	
 	//! Receive function
 	/*! a neuron receives a signal from another neuron 
 	 * by using the ring buffer */
 	void receive (int t,double j);
-	
-	/* poisson destribution to geneate random connectivity between neurons */ 
-	int random_poisson (int r) ;
+
 } ;
 
 #endif 	

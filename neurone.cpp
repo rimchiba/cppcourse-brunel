@@ -5,6 +5,8 @@ using namespace std ;
 ///! Constructor 
 /*! to fill out the buffer 
  * of D/h + 1 size with zeros 
+ * and caracterize the neuron
+ * if it is inhibitory or excitatory
  */
  
 Neurone::Neurone (double j)
@@ -60,36 +62,35 @@ void Neurone::set_buffer (vector<double> buffer )
 	buffer = buffer ;
 }
 
-/* generating random values */
-int Neurone::random_poisson (int r)
+
+// destructor
+Neurone::~Neurone(){} 
+ 
+int Neurone::random_poisson (int r) //to generate random values for the potential
 {
 	random_device rd;
 	mt19937 gen(rd());
 	poisson_distribution<> poisson(r);
 	return poisson(gen) ;
-}
-
-// destructor
-Neurone::~Neurone(){} 
+} 
 
 ///! updating a neuron in a time t 
 /*! and return if it spikes 
  * if there is a spike the potential
  * is set to zero */
- 
 bool Neurone::update (int t) 
 {
 	bool spike = false ;
 	
-	if( ( !times_.empty()) and (t*h - times_.back() < 2) ) 
+	if( ( !times_.empty()) and (t*h - times_.back() < 2) )   // if the membrane is refractory
 	{
 		V_ = 0.0 ;
 	}
 	else
 	{
-		 V_ = exp (-h/tau)*V_  +  buffer[t % (d + 1)] + random_poisson(0.2*C_ext*h)*J;	       
+		 V_ = exp (-h/tau)*V_  +  buffer[t % (d + 1)] + random_poisson(0.2*h*C_ext)*J;	       
 		
-		if (V_ > V_thr) 
+		if (V_ > V_thr)              // if it spikes
 			{
 				spike = true ;
 				V_ = 0.0 ;
@@ -98,9 +99,7 @@ bool Neurone::update (int t)
 			}
 	}		
 	
-	
-	
-	buffer[t % (d + 1)] = 0 ;
+	buffer[t % (d + 1)] = 0 ;   // empty the buffer after using the value inside
 	return spike ;
 }	
 
